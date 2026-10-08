@@ -1,0 +1,29 @@
+{
+    "name": "CupkekGames.Combat.HexGrids.Tests",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d4ab57e641bcdbc4bba605962b523fa1",
+        "GUID:cfb7852e8581bdc4db349a53bef82dce",
+        "GUID:1c8a1107e14a7f440b63d2aaf0d317d2",
+        "GUID:c81485117be9f8d47b2f1ff6cbcb3610",
+        "GUID:627a6a50a96ba294eb51be4e4019a893",
+        "GUID:80ecb87cae9c44d19824e70ea7229748",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

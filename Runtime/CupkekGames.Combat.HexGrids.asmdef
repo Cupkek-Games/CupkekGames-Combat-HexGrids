@@ -1,0 +1,22 @@
+{
+    "name": "CupkekGames.Combat.HexGrids",
+    "rootNamespace": "CupkekGames.Combat.HexGrids",
+    "references": [
+        "GUID:1c8a1107e14a7f440b63d2aaf0d317d2",
+        "GUID:c81485117be9f8d47b2f1ff6cbcb3610",
+        "GUID:cfb7852e8581bdc4db349a53bef82dce",
+        "GUID:627a6a50a96ba294eb51be4e4019a893",
+        "GUID:8c3d11471c0513f49b70cb43205c7de4",
+        "GUID:80ecb87cae9c44d19824e70ea7229748",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

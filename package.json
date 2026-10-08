@@ -1,0 +1,26 @@
+{
+  "name": "com.cupkekgames.combat.hexgrids",
+  "displayName": "CupkekGames Combat Hex Grids",
+  "version": "0.1.0",
+  "author": {
+    "name": "CupkekGames",
+    "url": "https://www.docs.cupkek.games"
+  },
+  "unity": "6000.5",
+  "documentationUrl": "https://docs.cupkek.games/",
+  "description": "Combat on a hex grid: a CombatSpace where one combat unit is one tile, one unit stands per tile, units glide tile to tile on fixed ticks, and areas are tile patterns. Deterministic: units tick in turn, so the same fight plays out the same at any frame rate or speed.",
+  "keywords": [
+    "Combat",
+    "Hex",
+    "Grid",
+    "CupkekGames"
+  ],
+  "dependencies": {
+    "com.cupkekgames.combat": "0.7.0",
+    "com.cupkekgames.hexgrids": "0.1.0",
+    "com.cupkekgames.timesystem": "0.4.0",
+    "com.cupkekgames.units": "0.4.2",
+    "com.cupkekgames.animations": "0.2.0",
+    "com.unity.modules.ai": "1.0.0"
+  }
+}
