@@ -1,7 +1,7 @@
 {
   "name": "com.cupkekgames.combat.hexgrids",
   "displayName": "CupkekGames Combat Hex Grids",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "author": {
     "name": "CupkekGames",
     "url": "https://www.docs.cupkek.games"
@@ -16,7 +16,7 @@
     "CupkekGames"
   ],
   "dependencies": {
-    "com.cupkekgames.combat": "0.7.2",
+    "com.cupkekgames.combat": "0.7.3",
     "com.cupkekgames.hexgrids": "0.1.0",
     "com.cupkekgames.timesystem": "0.4.2",
     "com.cupkekgames.units": "0.4.2",
