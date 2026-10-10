@@ -198,6 +198,25 @@ namespace CupkekGames.Combat.HexGrids
             });
         }
 
+        /// <summary>
+        /// Pushes the unit away from <paramref name="from"/> (<see cref="HexCombatBoard.Push"/>):
+        /// the board has it on its new tile at once and the model slides there over
+        /// <paramref name="duration"/>. Returns the tiles it moved.
+        /// </summary>
+        internal int Push(HexCoord from, int tiles, float duration)
+        {
+            if (!Placed) return 0;
+
+            StopDash();
+            SetMoving(false);
+            int moved = Board.Push(Id, from, tiles);
+            if (moved == 0) return 0;
+
+            _dash = Tween.Position(_transform, TileCentre(Board.TileOf(Id)), Mathf.Max(0.01f, duration), Ease.OutQuad);
+            _timeBundle?.TimeScaleTween.Add(_dash);
+            return moved;
+        }
+
         internal void Place()
         {
             Board.Place(Id, Board.Layout.ToHex(_transform.position));

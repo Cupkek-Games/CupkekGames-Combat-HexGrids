@@ -112,7 +112,40 @@ namespace CupkekGames.Combat.HexGrids
         {
             results.Clear();
             TilesOf(area, _tiles);
-            Board.CollectOn(_tiles, _ids);
+            CollectOn(_tiles, results);
+        }
+
+        /// <summary>The units on the tiles within <paramref name="rings"/> steps of <paramref name="center"/>'s tile, it included, in id order.</summary>
+        public override void CollectAround(CombatUnit center, int rings, List<CombatUnit> results)
+        {
+            results.Clear();
+            if (!TryGetTile(center, out HexCoord tile)) return;
+
+            Board.AroundTiles(tile, rings, _tiles);
+            CollectOn(_tiles, results);
+        }
+
+        /// <summary>The units on the line one tile wide from <paramref name="from"/>'s tile through <paramref name="through"/>'s and on, <paramref name="length"/> tiles long, in id order.</summary>
+        public override void CollectLine(CombatUnit from, CombatUnit through, int length, List<CombatUnit> results)
+        {
+            results.Clear();
+            if (!TryGetTile(from, out HexCoord origin) || !TryGetTile(through, out HexCoord towards)) return;
+
+            Board.LineTiles(origin, towards, length, _tiles);
+            CollectOn(_tiles, results);
+        }
+
+        /// <summary>Pushes <paramref name="unit"/> away from <paramref name="from"/>'s tile on the board; its model slides to its new tile.</summary>
+        public override int Push(CombatUnit unit, CombatUnit from, int tiles, float duration)
+        {
+            int id = IdOf(unit);
+            if (id == HexCombatBoard.NoTarget || !TryGetTile(from, out HexCoord fromTile)) return 0;
+            return _byId[id].Push(fromTile, tiles, duration);
+        }
+
+        private void CollectOn(List<HexCoord> tiles, List<CombatUnit> results)
+        {
+            Board.CollectOn(tiles, _ids);
             foreach (int id in _ids)
             {
                 CombatUnit unit = _byId[id].View.CombatUnit;

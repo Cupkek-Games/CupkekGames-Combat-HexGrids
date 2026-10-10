@@ -353,5 +353,47 @@ namespace CupkekGames.Combat.HexGrids.Tests
 
             Assert.AreEqual(Play(), Play());
         }
+
+        [Test]
+        public void APush_MovesStraightAway_AndStopsBeforeWhatItCannotTake()
+        {
+            HexCombatBoard board = Board(columns: 8, rows: 4);
+            board.Place(1, Tile(2, 1));
+            board.Place(2, Tile(3, 1));
+
+            Assert.AreEqual(2, board.Push(2, board.TileOf(1), 2));
+            Assert.AreEqual(Tile(5, 1), board.TileOf(2), "Two tiles straight away along its row.");
+            Assert.IsTrue(board.IsFree(Tile(3, 1)), "Its old tile is free.");
+
+            board.Place(3, Tile(7, 1));
+            Assert.AreEqual(1, board.Push(2, board.TileOf(1), 3), "It stops before the unit behind it.");
+            Assert.AreEqual(Tile(6, 1), board.TileOf(2));
+
+            board.Field.Block(Tile(4, 2));
+            board.Place(4, Tile(3, 2));
+            Assert.AreEqual(0, board.Push(4, Tile(2, 2), 2), "A wall right behind it holds it.");
+            Assert.AreEqual(0, board.Push(1, board.TileOf(1), 2), "No way to push from its own tile.");
+
+            board.Place(5, Tile(6, 3));
+            Assert.AreEqual(1, board.Push(5, Tile(5, 3), 3), "The edge of the field stops it.");
+            Assert.AreEqual(Tile(7, 3), board.TileOf(5));
+        }
+
+        [Test]
+        public void TheTilesAround_AreTheTileAndItsRings_OnTheField()
+        {
+            HexCombatBoard board = Board(columns: 8, rows: 4);
+            var tiles = new List<HexCoord>();
+
+            board.AroundTiles(Tile(3, 1), 1, tiles);
+            Assert.AreEqual(7, tiles.Count, "The tile and its six neighbours.");
+            Assert.Contains(Tile(3, 1), tiles);
+
+            board.AroundTiles(Tile(0, 0), 1, tiles);
+            Assert.Less(tiles.Count, 7, "A corner keeps only the field's tiles.");
+
+            board.AroundTiles(Tile(3, 1), 0, tiles);
+            CollectionAssert.AreEqual(new[] { Tile(3, 1) }, tiles);
+        }
     }
 }

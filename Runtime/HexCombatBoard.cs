@@ -248,6 +248,64 @@ namespace CupkekGames.Combat.HexGrids
         }
 
         /// <summary>
+        /// Pushes a unit straight away from <paramref name="from"/> by up to
+        /// <paramref name="tiles"/> tiles, along the line from there through its tile: it stops
+        /// before the first tile it cannot take (off the field, blocked, taken or reserved). A
+        /// step under way completes first. Returns the tiles it moved; 0 when it stands on
+        /// <paramref name="from"/> (no way to push).
+        /// </summary>
+        public int Push(int id, HexCoord from, int tiles)
+        {
+            if (tiles < 1) return 0;
+
+            Finish(id);
+            Piece piece = Get(id);
+            int distance = HexCoord.Distance(from, piece.Tile);
+            if (distance == 0) return 0;
+
+            // The way from the pusher through the unit, scaled to the push's length.
+            double scale = (double)tiles / distance;
+            HexCoord far = HexCoord.Round(piece.Tile.Q + (piece.Tile.Q - from.Q) * scale, piece.Tile.R + (piece.Tile.R - from.R) * scale);
+            HexShapes.Line(piece.Tile, far, _hexes);
+
+            HexCoord end = piece.Tile;
+            int moved = 0;
+            for (int i = 1; i < _hexes.Count && moved < tiles; i++)
+            {
+                HexCoord hex = _hexes[i];
+                if (!_field.IsOpen(hex) || !_occupancy.IsFree(hex, id)) break;
+                end = hex;
+                moved++;
+            }
+
+            if (moved > 0)
+            {
+                _occupancy.TryReserve(id, end);
+                _occupancy.CompleteMove(id);
+                piece.Tile = end;
+                piece.To = end;
+            }
+
+            return moved;
+        }
+
+        /// <summary>
+        /// The field's tiles within <paramref name="rings"/> steps of <paramref name="origin"/>:
+        /// the origin and the rings around it.
+        /// </summary>
+        public void AroundTiles(HexCoord origin, int rings, List<HexCoord> results)
+        {
+            results.Clear();
+            if (rings < 0) return;
+
+            HexShapes.Range(origin, rings, _hexes);
+            foreach (HexCoord hex in _hexes)
+            {
+                if (_field.Contains(hex)) results.Add(hex);
+            }
+        }
+
+        /// <summary>
         /// The field's tiles whose centre lies within <paramref name="radius"/> tiles of
         /// <paramref name="origin"/>'s centre (a radius of 1.6 is the tile and its six
         /// neighbours).
