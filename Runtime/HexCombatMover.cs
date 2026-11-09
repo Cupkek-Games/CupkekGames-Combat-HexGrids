@@ -14,8 +14,9 @@ namespace CupkekGames.Combat.HexGrids
     /// between ticks the model glides from tile to tile, playing its
     /// <see cref="CombatUnitView.MoveAnimationKind"/>, and turns to face where it walks or,
     /// standing, its target; while it acts it faces the tile its target stood on when the
-    /// action began, so its aim holds. A navmesh agent on the same body is switched off: the
-    /// grid moves it.
+    /// action began, so its aim holds, and after a dash it keeps facing the way it dashed until
+    /// that action is over (a slash-through ends with its back to whom it cut). A navmesh agent
+    /// on the same body is switched off: the grid moves it.
     /// </summary>
     public sealed class HexCombatMover : ICombatMover
     {
@@ -32,6 +33,9 @@ namespace CupkekGames.Combat.HexGrids
         private bool _moving;
         // While acting: the tile its target stood on when the action began.
         private HexCoord? _aim;
+        // After a dash, until its next Follow (the action is over; Hold comes every tick while acting): the way it
+        // dashed (flat).
+        private Vector3? _heading;
         private Tween _dash;
         private CancellationTokenRegistration _dashCancel;
 
@@ -103,6 +107,7 @@ namespace CupkekGames.Combat.HexGrids
         {
             _target = target;
             _aim = null;
+            _heading = null;
             if (Placed) Board.Follow(Id, _space.IdOf(target));
         }
 
@@ -188,6 +193,9 @@ namespace CupkekGames.Combat.HexGrids
                 HexCoord end = Board.Dash(Id, reach, passOver: mode == CombatDashMode.Through);
                 _dash = Tween.Position(_transform, TileCentre(end), Mathf.Max(0.01f, duration), ease)
                     .OnComplete(() => _dashCancel.Dispose());
+                Vector3 way = offset;
+                way.y = 0f;
+                if (way.sqrMagnitude > 1e-6f) _heading = way;
             }
 
             _timeBundle?.TimeScaleTween.Add(_dash);
@@ -252,7 +260,8 @@ namespace CupkekGames.Combat.HexGrids
             else
             {
                 _transform.position = TileCentre(Board.TileOf(Id));
-                if (_aim.HasValue) facing = TileCentre(_aim.Value) - position;
+                if (_heading.HasValue) facing = _heading.Value;
+                else if (_aim.HasValue) facing = TileCentre(_aim.Value) - position;
                 else facing = _target?.View != null && _target.IsAlive ? _target.View.transform.position - position : Vector3.zero;
             }
 
