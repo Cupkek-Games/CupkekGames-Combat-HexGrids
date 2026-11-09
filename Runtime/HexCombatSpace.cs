@@ -63,6 +63,17 @@ namespace CupkekGames.Combat.HexGrids
 
         public HexFieldView Field => _field;
 
+        /// <summary>
+        /// Puts the space on <paramref name="field"/>, for a space built in code (an editor sandbox, a
+        /// test); call it before the board is first used.
+        /// </summary>
+        public void Bind(HexFieldView field)
+        {
+            if (field == null) throw new ArgumentNullException(nameof(field));
+            if (_board != null) throw new InvalidOperationException($"[HexCombatSpace] '{name}' already built its board on '{_field.name}'.");
+            _field = field;
+        }
+
         /// <summary>Every unit's mover, in the order they were made (fallen ones too, not <see cref="HexCombatMover.Placed"/>).</summary>
         public IReadOnlyList<HexCombatMover> Movers => _moverOrder;
 
