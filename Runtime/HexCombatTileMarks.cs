@@ -27,6 +27,9 @@ namespace CupkekGames.Combat.HexGrids
         [Tooltip("Metres above the field's plane (above any paint on the field).")]
         [SerializeField] private float _lift = 0.03f;
 
+        [Tooltip("A soft fill inside the ring: its alpha at the ring, as a share of the ring colour's (0: no fill). It fades to nothing at the tile's centre.")]
+        [SerializeField, Range(0f, 1f)] private float _fillAlpha = 0f;
+
         private Mesh _mesh;
         private readonly List<HexTileStyle> _tiles = new List<HexTileStyle>();
         private readonly List<Vector3> _vertices = new List<Vector3>();
@@ -57,12 +60,19 @@ namespace CupkekGames.Combat.HexGrids
             {
                 CombatUnit unit = mover.View.CombatUnit;
                 if (!mover.Placed || unit == null) continue;
-                _tiles.Add(new HexTileStyle(mover.Tile, Color.clear, _teamColors[Mathf.Clamp(unit.TeamId, 0, _teamColors.Length - 1)]));
+                Color ring = _teamColors[Mathf.Clamp(unit.TeamId, 0, _teamColors.Length - 1)];
+                Color fill = ring;
+                fill.a *= _fillAlpha;
+                Color centre = fill;
+                centre.a = 0f;
+                _tiles.Add(new HexTileStyle(mover.Tile, fill, ring, centre));
             }
 
             HexLayout layout = _space.Board.Layout;
+            // The fill reaches the ring's inner edge.
+            float fillInset = _fillAlpha > 0f ? Mathf.Max(0f, _inset - _width * 0.5f / layout.Size) : 0f;
             HexTileMesh.Build(_mesh, layout.WithOrigin(layout.Origin - transform.position), _tiles,
-                _inset, _width, 0f, _lift, 1f, _vertices, _vertexColors, _triangles);
+                _inset, _width, fillInset, _lift, 1f, _vertices, _vertexColors, _triangles);
         }
 
         private void OnDestroy()

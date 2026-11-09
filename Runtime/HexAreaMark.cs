@@ -16,8 +16,8 @@ namespace CupkekGames.Combat.HexGrids
     [RequireComponent(typeof(HexTilePainter))]
     public sealed class HexAreaMark : CombatAreaMark
     {
-        // The outline reads at least this opaque, however faint the fill's colour.
-        private const float RingAlpha = 0.9f;
+        // The outline reads at least this opaque, however faint the fill's colour (HexCombatSpace's area ring alpha).
+        private float _ringAlpha = 0.9f;
 
         // Above the team rings (0.03) and any ground paint.
         private const float Lift = 0.04f;
@@ -52,9 +52,10 @@ namespace CupkekGames.Combat.HexGrids
             return mark;
         }
 
-        internal void Show(List<HexCoord> tiles, Color color, float fillOpacity)
+        internal void Show(List<HexCoord> tiles, Color color, float fillOpacity, float ringAlpha)
         {
             BeginShowing();
+            _ringAlpha = ringAlpha;
             _tiles.Clear();
             _tiles.AddRange(tiles);
             _color = color;
@@ -102,7 +103,7 @@ namespace CupkekGames.Combat.HexGrids
             Color fillColor = _color;
             fillColor.a = _color.a * _fillOpacity * fill;
             Color ringColor = _color;
-            ringColor.a = Mathf.Max(_color.a, RingAlpha);
+            ringColor.a = Mathf.Max(_color.a, _ringAlpha);
 
             _painter.Clear();
             foreach (HexCoord tile in _tiles) _painter.Paint(tile, fillColor, ringColor);

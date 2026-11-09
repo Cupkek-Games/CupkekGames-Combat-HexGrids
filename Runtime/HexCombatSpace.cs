@@ -39,6 +39,9 @@ namespace CupkekGames.Combat.HexGrids
         [Tooltip("A warning's fill at full, as a share of its colour's alpha: the hexes read while the units on them still show.")]
         [SerializeField, Range(0f, 1f)] private float _areaFillOpacity = 0.4f;
 
+        [Tooltip("A warning's outline is at least this opaque, however faint its colour: lower it for softer marks.")]
+        [SerializeField, Range(0f, 1f)] private float _areaRingAlpha = 0.9f;
+
         [Tooltip("The layer warnings are drawn on: a game whose ultimates darken the scene puts them on its effects layer, so they stay lit.")]
         [SerializeField] private string _areaLayer = "Default";
 
@@ -212,7 +215,7 @@ namespace CupkekGames.Combat.HexGrids
             }
 
             TilesOf(area, _tiles);
-            mark.Show(_tiles, color, _areaFillOpacity);
+            mark.Show(_tiles, color, _areaFillOpacity, _areaRingAlpha);
             return mark;
         }
 
